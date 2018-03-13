@@ -49,7 +49,7 @@ export default function TableTreeWalker(handler, options) {
 
       // if any input or output clauses (columns) were added
       // make sure that for each rule the according input/output entry is created
-      handleRules(table.rule, ctx, table);
+      return handleRules(table.rule, ctx, table);
     } else {
       throw new Error(`no table for ${ elementToString(decision) }`);
     }
@@ -63,12 +63,13 @@ export default function TableTreeWalker(handler, options) {
   }
 
   function handleRules(rules, context, definitions) {
-    forEach(rules, function(e) {
-      visit(e, context, definitions);
 
-      handleEntry(e.inputEntry, e);
+    return iterator(rules, function(rule) {
+      visit(rule, context, definitions);
 
-      handleEntry(e.outputEntry, e);
+      handleEntry(rule.inputEntry, rule);
+
+      handleEntry(rule.outputEntry, rule);
     });
   }
 
@@ -84,4 +85,39 @@ export default function TableTreeWalker(handler, options) {
   return {
     handleDecision: handleDecision
   };
+}
+
+
+
+// helpers ///////////////////////
+
+function iterator(elements, handleFn) {
+
+  let badge = 150;
+
+  let idx = 0;
+
+  return {
+    index() {
+      return idx;
+    },
+
+    next() {
+
+      console.log('next!');
+
+      do {
+        const e = elements[idx++];
+
+        console.log(idx, e);
+
+        if (e) {
+          handleFn(e);
+        } else {
+          return false;
+        }
+      } while (idx % badge !== 0);
+    }
+  };
+
 }

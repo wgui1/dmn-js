@@ -18,10 +18,9 @@ export function importDecision(decisionTable, decision, done) {
 
   let hasModeling = decisionTable.get('modeling', false);
 
-  let error,
-      warnings = [];
+  let warnings = [];
 
-  function render(decision) {
+  function render(decision, done) {
 
     const visitor = {
       create(type, parent, clause, rule) {
@@ -43,26 +42,66 @@ export function importDecision(decisionTable, decision, done) {
 
     const walker = new TableTreeWalker(visitor, { canAddMissingEntries: hasModeling });
 
-    // import
-    walker.handleDecision(decision);
+    let ruleIterator;
+
+    function next() {
+
+      setTimeout(function() {
+        let err;
+        let hasNext;
+
+        try {
+          hasNext = ruleIterator.next();
+        } catch (e) {
+          err = e;
+        }
+
+        eventBus.fire('elements.changed', {
+          elements: [ sheet.getRoot() ]
+        });
+
+        if (err) {
+          return done(err);
+        }
+
+        if (hasNext === false) {
+          return done();
+        }
+
+        next();
+      }, 0);
+    }
+
+    let err;
+
+    try {
+      // import
+      ruleIterator = walker.handleDecision(decision);
+    } catch (e) {
+      console.log(e);
+      err = e;
+    }
+
+    if (err) {
+      return done(err);
+    } else {
+      next();
+    }
   }
 
   eventBus.fire('import.render.start', { decision: decision });
 
-  try {
-    render(decision);
-  } catch (e) {
-    error = e;
-  }
+  render(decision, function(error) {
 
-  eventBus.fire('import.render.complete', {
-    error: error,
-    warnings: warnings
+    eventBus.fire('import.render.complete', {
+      error: error,
+      warnings: warnings
+    });
+
+    eventBus.fire('elements.changed', {
+      elements: [ sheet.getRoot() ]
+    });
+
+    done(error, warnings);
   });
-
-  eventBus.fire('elements.changed', {
-    elements: [ sheet.getRoot() ]
-  });
-
-  done(error, warnings);
 }

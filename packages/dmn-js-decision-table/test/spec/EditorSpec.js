@@ -2,7 +2,7 @@ import TestContainer from 'mocha-test-container-support';
 
 import DmnDecisionTableEditor from '../helper/DecisionTableEditor';
 
-import TestDecision from './simple.dmn';
+import TestDecision from './performance.dmn';
 
 describe('DecisionTable', function() {
 
@@ -17,13 +17,18 @@ describe('DecisionTable', function() {
       container: testContainer
     });
 
+    console.time('import');
     dmnDecisionTableEditor.importXML(xml, (err, warnings) => {
+
+      console.timeEnd('import');
       done(err, warnings, dmnDecisionTableEditor);
     });
   }
 
 
-  it('should import simple decision', function(done) {
+  this.timeout(30000);
+
+  it.only('should import simple decision', function(done) {
     createDecisionTableEditor(TestDecision, done);
   });
 
