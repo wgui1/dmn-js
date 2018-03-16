@@ -19,7 +19,10 @@ export default function HitPolicyProviderEditing(
     }
   });
 
-  eventBus.on('hitPolicy.edit', ({ event, node }) => {
+  eventBus.on('hitPolicy.edit', ({ event }) => {
+
+    const node = event.target;
+
     const { left, top, width, height } = node.getBoundingClientRect();
 
     const container = renderer.getContainer();
