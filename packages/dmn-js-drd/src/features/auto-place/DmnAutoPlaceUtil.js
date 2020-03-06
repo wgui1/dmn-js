@@ -46,26 +46,39 @@ function getTextAnnotationPosition(source, element) {
  * compute actual distance from previous nodes in flow.
  */
 function getDRGElementPosition(source, element) {
-  var sourceMid = getMid(source),
-      sourceTrbl = asTRBL(source);
+  var sourceTrbl = asTRBL(source),
+      sourceMid = getMid(source);
 
-  var verticalDistance = getConnectedDistance(source, 'y', function(connection) {
-    return !is(connection, 'dmn:Association');
-  }, {
-    connectionTarget: source
+  function getWeight(connection) {
+    return connection.target === source ? 5 : 1;
+  }
+
+  var verticalDistance = getConnectedDistance(source, {
+    defaultDistance: 180,
+    direction: 's',
+    getWeight: getWeight,
+    filter: filter,
+    reference: 'center'
   });
 
   var position = {
     x: sourceMid.x,
-    y: sourceTrbl.bottom + verticalDistance + element.height / 2
+    y: sourceTrbl.bottom + verticalDistance
   };
 
   var escapeDirection = {
     x: {
-      margin: 30,
-      rowSize: 20
+      margin: 60,
+      rowSize: 180
     }
   };
 
   return deconflictPosition(source, element, position, escapeDirection);
+}
+
+
+// helpers //////////
+
+function filter(connection) {
+  return !is(connection, 'dmn:Association');
 }

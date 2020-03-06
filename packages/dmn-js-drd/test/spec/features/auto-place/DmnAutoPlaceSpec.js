@@ -37,7 +37,7 @@ describe('features/auto-place', function() {
           behind: 'Decision_1',
           expectedBounds: {
             x: 160,
-            y: 330,
+            y: 420,
             width: 180,
             height: 80
           }
@@ -48,8 +48,8 @@ describe('features/auto-place', function() {
           element: 'dmn:Decision',
           behind: 'Decision_2',
           expectedBounds: {
-            x: 580,
-            y: 330,
+            x: 610,
+            y: 420,
             width: 180,
             height: 80
           }
@@ -60,7 +60,7 @@ describe('features/auto-place', function() {
           element: 'dmn:Decision',
           behind: 'Decision_4',
           expectedBounds: {
-            x: 880,
+            x: 910,
             y: 370,
             width: 180,
             height: 80
@@ -72,8 +72,8 @@ describe('features/auto-place', function() {
           element: 'dmn:Decision',
           behind: 'Decision_6',
           expectedBounds: {
-            x: 790,
-            y: 330,
+            x: 1120,
+            y: 480,
             width: 180,
             height: 80
           }
