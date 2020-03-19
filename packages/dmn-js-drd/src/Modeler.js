@@ -20,7 +20,7 @@ import LabelEditingModule from './features/label-editing';
 import ModelingModule from './features/modeling';
 import MoveModule from 'diagram-js/lib/features/move';
 import PaletteModule from './features/palette';
-import SnappingModule from 'diagram-js/lib/features/snapping';
+import SnappingModule from './features/snapping';
 
 /**
  * A modeler for DMN tables.
